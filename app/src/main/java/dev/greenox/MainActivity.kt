@@ -1,128 +1,56 @@
 package dev.greenox
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.Image
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ShapeDefaults
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import dev.greenox.ui.theme.LimonadeAppTheme
+import dev.greenox.ui.theme.TipTimeAppTheme
+import java.text.NumberFormat
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LimonadeAppTheme {
-                LemonadeApp()
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun Lemonade(
-    modifier: Modifier = Modifier
-) {
-    var lemonade by remember { mutableIntStateOf(value = 1) }
-    var juice by remember { mutableIntStateOf(value = 1) }
-
-    val image = when (lemonade) {
-        1 -> R.drawable.lemon_tree
-        2 -> R.drawable.lemon_squeeze
-        3 -> R.drawable.lemon_drink
-        else -> R.drawable.lemon_restart
-    }
-
-    val info = when (lemonade) {
-        1 -> R.string.lemon_tree
-        2 -> R.string.lemon
-        3 -> R.string.glass_of_lemonade
-        else -> R.string.empty_glass
-    }
-
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = stringResource(id = R.string.lemonade),
-                        fontWeight = FontWeight.Bold,
-                    )
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Yellow
-                )
-            )
-        }
-    ) { padding ->
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = modifier,
-        ) {
-            Button(
-                shape = ShapeDefaults.ExtraLarge,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = colorResource(id = R.color.mint_whisper)
-                ),
-                modifier = Modifier
-                    .padding(paddingValues = padding),
-                onClick = {
-                    if (lemonade == 2) {
-                        if (juice % 3 == 0) {
-                            lemonade++
-                            juice = 1
-                        } else {
-                            juice = (1..10).random()
-                        }
-                    } else if (lemonade == 4) {
-                        lemonade = 1
-                    } else {
-                        lemonade++
-                    }
+            TipTimeAppTheme {
+                Surface {
+                    TipTimeApp()
                 }
-            ) {
-                Image(
-                    painter = painterResource(id = image),
-                    contentDescription = lemonade.toString(),
-                )
             }
-            Spacer(
-                modifier = Modifier.height(height = 16.dp)
-            )
-            Text(
-                text = stringResource(id = info),
-                fontSize = 18.sp
-            )
         }
     }
 }
@@ -130,13 +58,145 @@ fun Lemonade(
 @Preview(
     showSystemUi = true,
     showBackground = true,
-    name = "Lemonade app"
+    name = "TipTime app"
 )
 @Composable
-fun LemonadeApp() {
-    Lemonade(
+fun TipTimeApp() {
+    TipTimeLayout()
+}
+
+@Composable
+fun TipTimeLayout() {
+    var amountInput by remember { mutableStateOf(value = "") }
+    var tipInput by remember { mutableStateOf(value = "") }
+    var roundUp by remember { mutableStateOf(value = false) }
+
+    val amount = amountInput.toDoubleOrNull() ?: 0.0
+    val tipPercent = tipInput.toDoubleOrNull() ?: 0.0
+    val tip = calculateTip(amount, tipPercent, roundUp)
+
+    Column(
         modifier = Modifier
-            .fillMaxSize()
-            .wrapContentSize(align = Alignment.Center)
+            .statusBarsPadding()
+            .padding(horizontal = 40.dp)
+            .verticalScroll(state = rememberScrollState())
+            .safeDrawingPadding(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Text(
+            text = stringResource(id = R.string.calculate_tip),
+            modifier = Modifier
+                .padding(bottom = 16.dp, top = 40.dp)
+                .align(alignment = Alignment.Start)
+        )
+
+        EditNumberField(
+            value = amountInput,
+            label = R.string.bill_amount,
+            leadingIcon = R.drawable.money,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Next,
+            ),
+            onValueChange = {
+                amountInput = it
+            },
+            modifier = Modifier
+                .padding(bottom = 32.dp)
+                .fillMaxSize(),
+        )
+
+        EditNumberField(
+            value = tipInput,
+            label = R.string.how_was_the_service,
+            leadingIcon = R.drawable.percent,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done,
+            ),
+            onValueChange = {
+                tipInput = it
+            },
+            modifier = Modifier
+                .padding(bottom = 32.dp)
+                .fillMaxSize(),
+        )
+
+        RoundTheTipRow(
+            roundUp = roundUp,
+            onRoundUpChanged = {
+                roundUp = it
+            },
+            modifier = Modifier.padding(bottom = 32.dp)
+        )
+
+        Text(
+            text = stringResource(id = R.string.tip_amount, tip),
+            style = MaterialTheme.typography.displaySmall
+        )
+    }
+}
+
+@SuppressLint("UnrememberedMutableState")
+@Composable
+fun EditNumberField(
+    value: String,
+    @DrawableRes leadingIcon: Int,
+    @StringRes label: Int,
+    keyboardOptions: KeyboardOptions,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    TextField(
+        value = value,
+        singleLine = true,
+        onValueChange = onValueChange,
+        keyboardOptions = keyboardOptions,
+        leadingIcon = {
+            Icon(
+                painter = painterResource(id = leadingIcon),
+                contentDescription = null,
+            )
+        },
+        label = {
+            Text(text = stringResource(id = label))
+        },
+        modifier = modifier
     )
+}
+
+@Composable
+fun RoundTheTipRow(
+    roundUp: Boolean,
+    onRoundUpChanged: (Boolean) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .fillMaxSize()
+            .size(size = 48.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = stringResource(id = R.string.round_up_tip))
+        Switch(
+            checked = roundUp,
+            onCheckedChange = onRoundUpChanged,
+            modifier = Modifier
+                .fillMaxSize()
+                .wrapContentWidth(Alignment.End)
+        )
+    }
+}
+
+private fun calculateTip(
+    amount: Double,
+    tipPercent: Double = 15.0,
+    roundUp: Boolean
+): String {
+    var tip = tipPercent / 100 * amount
+    if (roundUp) {
+        tip = kotlin.math.ceil(x = tip)
+    }
+    return NumberFormat.getCurrencyInstance().format(tip)
 }
