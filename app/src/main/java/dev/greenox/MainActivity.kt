@@ -1,204 +1,228 @@
 package dev.greenox
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
-import androidx.annotation.VisibleForTesting
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Icon
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import dev.greenox.ui.theme.TipTimeAppTheme
-import java.text.NumberFormat
+import androidx.compose.ui.unit.sp
+import dev.greenox.ui.theme.ArtSpaceAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            TipTimeAppTheme {
-                Surface {
-                    TipTimeApp()
+            ArtSpaceAppTheme {
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    ArtSpaceApp()
                 }
             }
         }
     }
 }
 
-@Preview(
-    showSystemUi = true,
-    showBackground = true,
-    name = "TipTime app"
-)
 @Composable
-fun TipTimeApp() {
-    TipTimeLayout()
-}
-
-@Composable
-fun TipTimeLayout() {
-    var amountInput by remember { mutableStateOf(value = "") }
-    var tipInput by remember { mutableStateOf(value = "") }
-    var roundUp by remember { mutableStateOf(value = false) }
-
-    val amount = amountInput.toDoubleOrNull() ?: 0.0
-    val tipPercent = tipInput.toDoubleOrNull() ?: 0.0
-    val tip = calculateTip(amount, tipPercent, roundUp)
-
-    Column(
-        modifier = Modifier
-            .statusBarsPadding()
-            .padding(horizontal = 40.dp)
-            .verticalScroll(state = rememberScrollState())
-            .safeDrawingPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = stringResource(id = R.string.calculate_tip),
-            modifier = Modifier
-                .padding(bottom = 16.dp, top = 40.dp)
-                .align(alignment = Alignment.Start)
+fun ArtSpaceLayout() {
+    val data = listOf(
+        mapOf(
+            "title" to "Mona Lisa",
+            "artist" to "Leonardo da Vinci",
+            "year" to 1503,
+            "image" to R.drawable.mona_lisa
+        ),
+        mapOf(
+            "title" to "The Starry Night",
+            "artist" to "Vincent van Gogh",
+            "year" to 1889,
+            "image" to R.drawable.the_starry_night
+        ),
+        mapOf(
+            "title" to "The Persistence of Memory",
+            "artist" to "Salvador Dalí",
+            "year" to 1931,
+            "image" to R.drawable.the_persistence_of_memory
+        ),
+        mapOf(
+            "title" to "Water Lilies",
+            "artist" to "Claude Monet",
+            "year" to 1906,
+            "image" to R.drawable.flowers
+        ),
+        mapOf(
+            "title" to "Girl with a Pearl Earring",
+            "artist" to "Johannes Vermeer",
+            "year" to 1665,
+            "image" to R.drawable.girl_with_a_pearl_earring
         )
+    )
 
-        EditNumberField(
-            value = amountInput,
-            label = R.string.bill_amount,
-            leadingIcon = R.drawable.money,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next,
-            ),
-            onValueChange = {
-                amountInput = it
-            },
-            modifier = Modifier
-                .padding(bottom = 32.dp)
-                .fillMaxSize(),
-        )
+    var dataIndex by remember { mutableIntStateOf(value = 0) }
 
-        EditNumberField(
-            value = tipInput,
-            label = R.string.how_was_the_service,
-            leadingIcon = R.drawable.percent,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Done,
-            ),
-            onValueChange = {
-                tipInput = it
-            },
-            modifier = Modifier
-                .padding(bottom = 32.dp)
-                .fillMaxSize(),
-        )
+    Scaffold(
+        bottomBar = {
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(height = 80.dp)
+            ) {
+                Button(
+                    modifier = Modifier
+                        .weight(weight = 1F)
+                        .padding(horizontal = 15.dp),
+                    onClick = {
+                        if (dataIndex != 0) {
+                            dataIndex--
+                        } else {
+                            dataIndex = 4
+                        }
+                    }
+                ) {
+                    Text(text = stringResource(id = R.string.previous))
+                }
 
-        RoundTheTipRow(
-            roundUp = roundUp,
-            onRoundUpChanged = {
-                roundUp = it
-            },
-            modifier = Modifier.padding(bottom = 32.dp)
-        )
+                Button(
+                    modifier = Modifier
+                        .weight(weight = 1F)
+                        .padding(horizontal = 15.dp),
+                    onClick = {
+                        if (dataIndex != 4) {
+                            dataIndex++
+                        } else {
+                            dataIndex = 0
+                        }
+                    }
+                ) {
+                    Text(text = stringResource(id = R.string.next))
+                }
+            }
+        },
+    ) { paddingValues ->
+        Column(
+            verticalArrangement = Arrangement.SpaceEvenly,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(paddingValues)
+                .verticalScroll(state = rememberScrollState())
+                .safeDrawingPadding(),
+        ) {
+            ImageAndInformation(
+                horizontalPadding = 30.dp,
+                verticalPadding = 40.dp,
+                elevation = 5.dp,
+                modifier = Modifier.height(height = 550.dp),
+                color = colorResource(id = R.color.mint_whisper),
+            ) {
+                Image(
+                    painter = painterResource(id = data[dataIndex]["image"] as Int),
+                    contentDescription = dataIndex.toString(),
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(all = 20.dp)
+                )
+            }
 
-        Text(
-            text = stringResource(id = R.string.tip_amount, tip),
-            style = MaterialTheme.typography.displaySmall
-        )
+            ImageAndInformation(
+                horizontalPadding = 40.dp,
+                verticalPadding = 30.dp,
+                modifier = Modifier.fillMaxSize(),
+                color = colorResource(id = R.color.lavender_mist)
+            ) {
+                Column(
+                    verticalArrangement = Arrangement.SpaceEvenly,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(
+                            all = 20.dp,
+                        )
+                ) {
+                    Text(
+                        text = (data[dataIndex]["title"] ?: "Unknown").toString(),
+                        fontSize = 25.sp
+                    )
+                    Row {
+                        Text(
+                            text = (data[dataIndex]["artist"] ?: "Unknown").toString(),
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = (" (${data[dataIndex]["year"]})"),
+                            fontSize = 20.sp
+                        )
+                    }
+                }
+            }
+        }
     }
 }
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
-fun EditNumberField(
-    value: String,
-    @DrawableRes leadingIcon: Int,
-    @StringRes label: Int,
-    keyboardOptions: KeyboardOptions,
-    onValueChange: (String) -> Unit,
+fun ImageAndInformation(
+    horizontalPadding: Dp,
+    verticalPadding: Dp,
+    elevation: Dp = 0.dp,
+    color: Color,
     modifier: Modifier = Modifier,
+    content: @Composable BoxScope.() -> Unit
 ) {
-    TextField(
-        value = value,
-        singleLine = true,
-        onValueChange = onValueChange,
-        keyboardOptions = keyboardOptions,
-        leadingIcon = {
-            Icon(
-                painter = painterResource(id = leadingIcon),
-                contentDescription = null,
-            )
-        },
-        label = {
-            Text(text = stringResource(id = label))
-        },
+    Box(
         modifier = modifier
+            .padding(
+                horizontal = horizontalPadding,
+                vertical = verticalPadding
+            )
+            .shadow(elevation = elevation)
+            .background(color = color),
+        content = content
     )
 }
 
+@Preview(
+    showSystemUi = true,
+    showBackground = true,
+    name = "ArtSpace app"
+)
 @Composable
-fun RoundTheTipRow(
-    roundUp: Boolean,
-    onRoundUpChanged: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Row(
-        modifier = modifier
-            .fillMaxSize()
-            .size(size = 48.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(text = stringResource(id = R.string.round_up_tip))
-        Switch(
-            checked = roundUp,
-            onCheckedChange = onRoundUpChanged,
-            modifier = Modifier
-                .fillMaxSize()
-                .wrapContentWidth(Alignment.End)
-        )
-    }
-}
-
-@VisibleForTesting
-internal fun calculateTip(
-    amount: Double,
-    tipPercent: Double = 15.0,
-    roundUp: Boolean
-): String {
-    var tip = tipPercent / 100 * amount
-    if (roundUp) {
-        tip = kotlin.math.ceil(x = tip)
-    }
-    return NumberFormat.getCurrencyInstance().format(tip)
+fun ArtSpaceApp() {
+    ArtSpaceLayout()
 }
