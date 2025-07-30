@@ -6,6 +6,15 @@
     <dimen name="padding_8">8dp</dimen>
     <dimen name="padding_16">16dp</dimen>
 
+    <!-- Height -->
+    <dimen name="height_72">72dp</dimen>
+
+    <!-- Elevation -->
+    <dimen name="elevation_2">2dp</dimen>
+
+    <!-- Vertical -->
+    <dimen name="vertical_8">8dp</dimen>
+
     <!-- Image Size -->
     <dimen name="image_size">64dp</dimen>
 </resources>

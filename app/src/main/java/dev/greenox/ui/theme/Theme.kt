@@ -88,7 +88,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun WoofAppTheme(
+fun SuperheroesAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
