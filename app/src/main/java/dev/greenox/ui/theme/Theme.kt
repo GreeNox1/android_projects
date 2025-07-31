@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import dev.greenox.model.Wellness
 
 private val LightColors = lightColorScheme(
     primary = md_theme_light_primary,
@@ -88,7 +89,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun SuperheroesAppTheme(
+fun WellnessAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,

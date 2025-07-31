@@ -12,9 +12,6 @@
     <!-- Elevation -->
     <dimen name="elevation_2">2dp</dimen>
 
-    <!-- Vertical -->
-    <dimen name="vertical_8">8dp</dimen>
-
     <!-- Image Size -->
     <dimen name="image_size">64dp</dimen>
 </resources>
