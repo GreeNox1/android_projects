@@ -40,7 +40,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun DessertClickerAppTheme(
+fun UnscrambleTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
