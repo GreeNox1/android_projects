@@ -3,7 +3,7 @@ package dev.greenox.data
 import dev.greenox.R
 import dev.greenox.model.Dessert
 
-class DataSource {
+object DataSource {
     val desserts = listOf(
         Dessert(imageId = R.drawable.cupcake, price = 5, startProductionAmount = 0),
         Dessert(imageId = R.drawable.donut, price = 10, startProductionAmount = 5),

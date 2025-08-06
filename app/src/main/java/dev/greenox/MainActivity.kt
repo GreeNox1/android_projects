@@ -5,7 +5,7 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
-import dev.greenox.data.DataSource
+import dev.greenox.ui.DessertClickerApp
 import dev.greenox.ui.theme.DessertClickerAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -16,9 +16,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             DessertClickerAppTheme {
                 Surface {
-                    DessertClickerApp(
-                        desserts = DataSource().desserts
-                    )
+                    DessertClickerApp()
                 }
             }
         }

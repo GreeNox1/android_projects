@@ -1,9 +1,5 @@
-package dev.greenox
+package dev.greenox.ui
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -27,10 +23,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -40,96 +34,36 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import dev.greenox.model.Dessert
+import androidx.lifecycle.viewmodel.compose.viewModel
+import dev.greenox.R
 import dev.greenox.ui.theme.DessertClickerAppTheme
-
-fun determineDessertToShow(
-    desserts: List<Dessert>,
-    dessertsSold: Int
-): Dessert {
-    var dessertToShow = desserts.first()
-    for (dessert in desserts) {
-        if (dessertsSold >= dessert.startProductionAmount) {
-            dessertToShow = dessert
-        } else {
-            break
-        }
-    }
-
-    return dessertToShow
-}
-
-private fun shareSoldDessertsInformation(intentContext: Context, dessertsSold: Int, revenue: Int) {
-    val sendIntent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(
-            Intent.EXTRA_TEXT,
-            intentContext.getString(R.string.share_text, dessertsSold, revenue)
-        )
-        type = "text/plain"
-    }
-
-    val shareIntent = Intent.createChooser(sendIntent, null)
-
-    try {
-        intentContext.startActivity(shareIntent, null)
-    } catch (_: ActivityNotFoundException) {
-
-        Toast.makeText(
-            intentContext,
-            intentContext.getString(R.string.sharing_not_available),
-            Toast.LENGTH_LONG
-        ).show()
-    }
-}
 
 @Composable
 fun DessertClickerApp(
-    desserts: List<Dessert>
+    dessertClickerViewModel: DessertClickerViewModel = viewModel(),
 ) {
-
-    var revenue by rememberSaveable { mutableIntStateOf(value = 0) }
-    var dessertsSold by rememberSaveable { mutableIntStateOf(value = 0) }
-
-    val currentDessertIndex by rememberSaveable { mutableIntStateOf(value = 0) }
-
-    var currentDessertPrice by rememberSaveable {
-        mutableIntStateOf(value = desserts[currentDessertIndex].price)
-    }
-    var currentDessertImageId by rememberSaveable {
-        mutableIntStateOf(value = desserts[currentDessertIndex].imageId)
-    }
+    val dessertClickerUiState by dessertClickerViewModel.uiState.collectAsState()
 
     Scaffold(
         topBar = {
             val intentContext = LocalContext.current
             DessertClickerAppBar(
                 onShareButtonClicked = {
-                    shareSoldDessertsInformation(
+                    dessertClickerViewModel.shareSoldDessertsInformation(
                         intentContext = intentContext,
-                        dessertsSold = dessertsSold,
-                        revenue = revenue
+                        dessertsSold = dessertClickerUiState.dessertsSold,
+                        revenue = dessertClickerUiState.revenue,
                     )
                 },
             )
         }
     ) { contentPadding ->
         DessertClickerScreen(
-            revenue = revenue,
-            dessertsSold = dessertsSold,
-            dessertImageId = currentDessertImageId,
-            onDessertClicked = {
-
-                // Update the revenue
-                revenue += currentDessertPrice
-                dessertsSold++
-
-                // Show the next dessert
-                val dessertToShow = determineDessertToShow(desserts, dessertsSold)
-                currentDessertImageId = dessertToShow.imageId
-                currentDessertPrice = dessertToShow.price
-            },
-            modifier = Modifier.padding(paddingValues = contentPadding)
+            revenue = dessertClickerUiState.revenue,
+            dessertsSold = dessertClickerUiState.dessertsSold,
+            dessertImageId = dessertClickerUiState.currentDessertImageId,
+            onDessertClicked = dessertClickerViewModel::onDessertClicked,
+            modifier = Modifier.padding(paddingValues = contentPadding),
         )
     }
 }
@@ -258,6 +192,6 @@ private fun TransactionInfo(
 @Composable
 fun MyDessertClickerAppPreview() {
     DessertClickerAppTheme {
-        DessertClickerApp(listOf(Dessert(R.drawable.cupcake, 5, 0)))
+        DessertClickerApp()
     }
 }
