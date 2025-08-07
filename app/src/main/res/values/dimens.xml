@@ -7,6 +7,8 @@
     <dimen name="padding_16">16dp</dimen>
 
     <!-- Height -->
+    <dimen name="height_8">8dp</dimen>
+    <dimen name="height_16">16dp</dimen>
     <dimen name="height_72">72dp</dimen>
 
     <!-- Elevation -->
@@ -14,4 +16,7 @@
 
     <!-- Image Size -->
     <dimen name="image_size">150dp</dimen>
+
+    <!-- Thickness Divider -->
+    <dimen name="thickness_divider">1dp</dimen>
 </resources>
