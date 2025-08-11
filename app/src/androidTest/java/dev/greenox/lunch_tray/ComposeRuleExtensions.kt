@@ -1,4 +1,4 @@
-package dev.greenox.cupcake
+package dev.greenox.lunch_tray
 
 import androidx.activity.ComponentActivity
 import androidx.annotation.StringRes
@@ -9,4 +9,4 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 
 fun <A : ComponentActivity> AndroidComposeTestRule<ActivityScenarioRule<A>, A>.onNodeWithStringId(
     @StringRes id: Int
-): SemanticsNodeInteraction = onNodeWithText(activity.getString(id))
+): SemanticsNodeInteraction = onNodeWithText(text = activity.getString(id))

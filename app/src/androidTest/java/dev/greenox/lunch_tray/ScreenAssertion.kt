@@ -1,4 +1,4 @@
-package dev.greenox.cupcake
+package dev.greenox.lunch_tray
 
 import androidx.navigation.NavController
 import org.junit.Assert
