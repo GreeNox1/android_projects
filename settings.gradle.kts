@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Lunch_Tray"
+rootProject.name = "Reply"
 include(":app")
