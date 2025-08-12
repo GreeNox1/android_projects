@@ -37,4 +37,7 @@
 
     <!-- Thickness Divider -->
     <dimen name="thickness_divider">1dp</dimen>
+
+    <!-- Radius -->
+    <dimen name="radius_4">4dp</dimen>
 </resources>

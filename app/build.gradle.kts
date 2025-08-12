@@ -57,6 +57,8 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.material3.window.size)
     testImplementation(libs.junit)
+    testImplementation(kotlin("test"))
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -65,5 +67,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.intents)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    testImplementation(kotlin("test"))
 }
