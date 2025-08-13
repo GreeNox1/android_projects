@@ -88,7 +88,7 @@ private val DarkColors = darkColorScheme(
 )
 
 @Composable
-fun RaceTrackerAppTheme(
+fun MarsPhotosAppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
@@ -118,6 +118,7 @@ fun RaceTrackerAppTheme(
 
     MaterialTheme(
         colorScheme = colorScheme,
+        shapes = Shapes,
         content = {
             Box(
                 modifier = Modifier

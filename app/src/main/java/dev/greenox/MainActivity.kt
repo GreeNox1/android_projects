@@ -7,19 +7,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import dev.greenox.ui.RaceTrackerApp
-import dev.greenox.ui.theme.RaceTrackerAppTheme
+import dev.greenox.ui.MarsPhotosApp
+import dev.greenox.ui.theme.MarsPhotosAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            RaceTrackerAppTheme {
+            MarsPhotosAppTheme {
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                 ) {
-                    RaceTrackerApp()
+                    MarsPhotosApp()
                 }
             }
         }

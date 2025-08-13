@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Race tracker"
+rootProject.name = "Mars Photos"
 include(":app")
