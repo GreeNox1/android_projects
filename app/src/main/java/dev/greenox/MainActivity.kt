@@ -7,19 +7,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import dev.greenox.ui.MarsPhotosApp
-import dev.greenox.ui.theme.MarsPhotosAppTheme
+import dev.greenox.ui.AmphibiansApp
+import dev.greenox.ui.theme.AmphibiansAppTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContent {
-            MarsPhotosAppTheme {
+            AmphibiansAppTheme {
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    MarsPhotosApp()
+                    AmphibiansApp()
                 }
             }
         }

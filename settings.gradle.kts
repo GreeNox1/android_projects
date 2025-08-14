@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Mars Photos"
+rootProject.name = "Amphibians"
 include(":app")

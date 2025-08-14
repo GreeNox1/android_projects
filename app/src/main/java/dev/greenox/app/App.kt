@@ -1,14 +1,12 @@
-package dev.greenox
+package dev.greenox.app
 
 import android.app.Application
-import dev.greenox.data.AppContainer
-import dev.greenox.data.DefaultAppContainer
 
-class MarsPhotosApplication : Application() {
+class App : Application() {
     lateinit var container: AppContainer
+
     override fun onCreate() {
         super.onCreate()
         container = DefaultAppContainer()
     }
-
 }

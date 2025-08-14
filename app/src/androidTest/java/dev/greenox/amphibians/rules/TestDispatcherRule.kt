@@ -1,4 +1,4 @@
-package dev.greenox.marsphotos.rules
+package dev.greenox.amphibians.rules
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,6 +12,7 @@ import org.junit.runner.Description
 class TestDispatcherRule @OptIn(ExperimentalCoroutinesApi::class) constructor(
     val testDispatcher: TestDispatcher = UnconfinedTestDispatcher()
 ) : TestWatcher() {
+
     @OptIn(ExperimentalCoroutinesApi::class)
     override fun starting(description: Description?) {
         Dispatchers.setMain(testDispatcher)
