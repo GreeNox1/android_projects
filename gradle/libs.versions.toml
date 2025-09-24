@@ -1,5 +1,5 @@
 [versions]
-agp = "8.11.2" # upgrade 8.11.1 -> 8.11.2
+agp = "8.13.0" # upgrade 8.11.1 -> 8.13.0
 kotlin = "2.2.20" # upgrade 2.0.21 -> 2.2.2
 coreKtx = "1.17.0" # upgrade 1.16.0 -> 1.17.0
 junit = "4.13.2"
@@ -12,6 +12,7 @@ lifecycleViewmodelCompose = "2.9.4" # upgrade 2.9.2 -> 2.9.4
 navigationCompose = "2.9.4" # upgrade 2.9.3 -> 2.9.4
 googleDevtools = "2.2.0-2.0.2"
 roomVersion = "2.8.0"
+datastore = "1.1.7"
 
 [libraries]
 # Core
@@ -48,6 +49,8 @@ androidx-espresso-intents = { group = "androidx.test.espresso", name = "espresso
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 
+# datastore
+androidx-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 # Android
